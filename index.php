@@ -1,47 +1,70 @@
 <?php
+ini_set('max_execution_time', 3600);
 
 $defaultBoardWidth = 3;
 $defaultBoardHeight = 3;
+$defaultSuccessCircular = true;
 $boardSquareSize = 60;
 
-include_once("protected/util.php");
-include_once("protected/view.php");
+include_once("protected/util.php"); // utilities
+include_once("protected/view.php"); // view
+include_once("protected/walkController.php"); // walk (a board)
 
-include_once("protected/models/Node.php");
-include_once("protected/models/Edge.php");
-include_once("protected/models/Board.php");
-include_once("protected/models/Stopwatch.php");
+include_once("protected/models/Node.php"); // Node model
+include_once("protected/models/Edge.php"); // Edge model
 
-$stopwatch = new Stopwatch();
-$stopwatch->start();
+include_once("protected/models/Walk.php"); // Walk model
 
+include_once("protected/models/Stopwatch.php"); // Stopwatch model
+
+$stopwatch = new Stopwatch(); // instantiate Stopwatch
+$stopwatch->start(); // start the stopwatch
 ?><html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="css/walk.css" type="text/css" media="all" />
+        <script language="javascript" src="js/scrollToBottom.js" />
         <title></title>
     </head>
     <body>
         <?php
-        
-        $board = new Board(
-                        util::requestVar("boardWidth", $defaultBoardWidth),
-                        util::requestVar("boardHeight", $defaultBoardHeight),
-                        util::requestVar("boardSquareSize", $boardSquareSize)
-        ); ?>        
-        
-        <h1>Board</h1>
-        <p class='subtitle'><?php echo $board->width; ?> x <?php echo $board->height; ?> nodes, assigned the following <strong>id</strong> numbers:</p>
-        <?php echo view::traceBoard($board); ?>
+        // VARIABLES
+        $board = util::requestVar("board", "grid");
+        $rules = array(
+            "successCircular" => util::requestVar("successCircular", $defaultSuccessCircular),
+        );
 
-        <h1>Edges</h1>        
-        <?php echo "<p>" . count($board->edges) . " edges.</p>" ?>
+        switch ($board) {
+            case "gridWithDiagonal":
+                include_once("protected/models/BoardGridWithDiagonal.php"); // Board model
+                $board = new BoardGridWithDiagonal;
+                break;
+            case "grid":
+                include_once("protected/models/BoardGrid.php"); // Board model
+                $board = new BoardGrid;
+                break;
+            default:
+                die("no board.  exit.");
+                break;
+        }
+        ?>        
 
-        <h1>Adjacency Lists</h1>
-        <?php echo view::traceBoardAdjacencyLists($board); ?>
+        <?php
+        $board->rules = $rules;
+        $board->width = util::requestVar("boardWidth", $defaultBoardWidth);
+        $board->height = util::requestVar("boardHeight", $defaultBoardHeight);
+        $board->squareSize = util::requestVar("boardSquareSize", $boardSquareSize);
+        $board->create();
+        echo view::traceAdjacencyLists($board); 
+        echo view::traceBoard($board);
+        echo view::traceEdges($board); 
+        echo view::stopwatch($stopwatch);
+        ?>
 
-        <h1>Walks</h1>
-        <?php echo walk::board($board); ?>
-        
+        <?php
+        $walk = new walkController($board, $rules, $stopwatch);
+        $walk->run();
+        ?>
+
     </body>
 </html>

@@ -319,7 +319,7 @@ class util {
      * @param type $var 
      */
     public function debugHtml($var) {
-        return str_replace(array("\n", " "), array("<br/>", "&nbsp;"), print_r($var, true));
+        return str_replace(array("\n", " "), array("<br/>", "&nbsp;"), var_export($var, true));
     }
 
 }

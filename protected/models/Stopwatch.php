@@ -12,14 +12,14 @@
  */
 class Stopwatch {
 
-    private $microtime;
+    private $timeStart;
 
     public function start() {
-        $this->microtime = microtime();
+        $this->timeStart = microtime(true);
     }
 
-    public function check() {
-        return microtime() - $this->microtime;
+    public function lap() {
+        return floor((microtime(true) - $this->timeStart)*1000);
     }
 
 }
