@@ -321,7 +321,45 @@ class util {
     public function debugHtml($var) {
         return str_replace(array("\n", " "), array("<br/>", "&nbsp;"), var_export($var, true));
     }
+    
+    /**
+     *
+     * @param array $ar
+     * @return array 
+     */
+    public function firstKeyValFrom($ar) {
+        $key = array_shift(array_keys($ar));
+        return array($key=>$ar[$key]);
+    }
 
+    /**
+     *
+     * @param array $ar
+     * @return array
+     */
+    public function firstValFrom($ar) {
+        return $ar[array_shift(array_keys($ar))];
+    }
+
+    /**
+     *
+     * @param array $ar
+     * @return array
+     */
+    public function lastKeyValFrom($ar) {
+        $key = array_pop(array_keys($ar));
+        return array($key=>$ar[$key]);
+    }
+
+    /**
+     *
+     * @param array $ar
+     * @return array
+     */
+    public function lastValFrom($ar) {
+        return $ar[array_pop(array_keys($ar))];
+    }
+    
 }
 
 ?>

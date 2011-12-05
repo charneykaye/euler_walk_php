@@ -53,24 +53,18 @@ class Walk {
 
     public function successCountTotal() {
         // if the count of nodes in our walk is equal to the count of nodes on the board
-        $count_one = count($this->nodes_id);
-        if (!isset($this->board->nodes)) {
-            echo util::debugHtml($this->board);
-            return false;
-        }
-        $count_two = count($this->board->nodes);
-//        die("message" . $e->getMessage() . "<br/><Br/>" . util::debugHtml($this->board->nodes));
-        if ($count_one == $count_two)
-            return true;
-        else
-            return false;
+        return ( count($this->nodes_id) == count($this->board->nodes));
     }
 
     public function successCircular() {
-        if (isset($this->rules['successCircular']))
-            if ($this->rules['successCircular'])
-            // if the last node is adjacent to the first node (circular path)
-                return in_array($this->nodes_id[0], $this->board->nodes[$this->nodes_id[count($this->nodes_id) - 1]]->adjacentTo);
+        if ($this->rule("successCircular"))
+        // if the last node is adjacent to the first node (circular path)
+        return in_array(
+                        util::firstValFrom($this->nodes_id),
+                        $this->board->nodes[ util::lastValFrom($this->nodes_id)]
+                        ->adjacentTo)
+
+        ;
         // else return false
         return true;
     }
@@ -103,6 +97,13 @@ class Walk {
             $this->nodes_id = $nodes_id;
         else
             $this->nodes_id = array();
+    }
+
+    public function rule($key, $value=null) {
+        if ($value !== null)
+            return $this->rules[$key] = $value;
+        if (isset($this->rules[$key]))
+            return $this->rules[$key];
     }
 
     /**

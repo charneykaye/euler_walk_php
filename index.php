@@ -23,7 +23,6 @@ $stopwatch->start(); // start the stopwatch
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="css/walk.css" type="text/css" media="all" />
-        <script language="javascript" src="js/scrollToBottom.js" />
         <title></title>
     </head>
     <body>
